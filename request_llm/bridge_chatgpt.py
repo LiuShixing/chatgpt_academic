@@ -152,7 +152,7 @@ def predict(inputs, top_p, temperature, chatbot=[], history=[], system_prompt=''
 
     if stream:
         raw_input = inputs
-        logging.info(f'[raw_input] {raw_input}')
+        logging.info(f"[raw_input]{json.dumps(raw_input, ensure_ascii=False)}")
         chatbot.append((inputs, ""))
         yield chatbot, history, "等待响应"
 
@@ -188,7 +188,8 @@ def predict(inputs, top_p, temperature, chatbot=[], history=[], system_prompt=''
                 try:
                     if len(json.loads(chunk.decode()[6:])['choices'][0]["delta"]) == 0:
                         # 判定为数据流的结束，gpt_replying_buffer也写完了
-                        logging.info(f'[response] {gpt_replying_buffer}')
+                        logging.info(f"[response]{json.dumps(gpt_replying_buffer, ensure_ascii=False)}")
+                        logging.info(f"[full_messages]{json.dumps({'query': payload, 'response': gpt_replying_buffer}, ensure_ascii=False)}")
                         break
                     # 处理数据流的主体
                     chunkjson = json.loads(chunk.decode()[6:])
